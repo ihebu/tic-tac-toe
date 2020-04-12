@@ -6,6 +6,7 @@ import colorama
 
 from termcolor import colored
 
+#this is necessary in order to display colors in windows
 colorama.init()
 
 GRID = [
@@ -13,6 +14,7 @@ GRID = [
     [None, None, None],
     [None, None, None]]
 
+#indexes of rows,coloumns and diagonals
 ELEMENTS = [
     [(0, 0), (0, 1), (0, 2)],
     [(0, 0), (1, 0), (2, 0)],
@@ -29,13 +31,13 @@ def clear():
     os.system(CLEAR)
 
 def shuffled(iter):
-    # return a randomly shuffled version of iter
+    # return a randomly shuffled version of an interable
     iter = list(iter)
     random.shuffle(iter)
     return iter
 
 def similar(x, indexes):
-    # check if elements are the same
+    # check if elements of a row / coloumn / diagonal are the same
     i, j = indexes[0]
     ref = x[3 * i + j]
     for index in indexes:
@@ -45,12 +47,13 @@ def similar(x, indexes):
     return True
 
 def color(x, indexes):
+    #if elements of a row / coloumn / diagonal are the same, color them in red
     for i, j in indexes:
         x[3 * i + j] = colored(x[3 * i + j], "red")
 
 def display(grid):
     x = [grid[i][j] or " " for i in range(3) for j in range(3)]
-    #if the computer wins color the winning set
+    #if the computer wins color the winning row / coloumn / diagonal
     for element in ELEMENTS:
         if similar(x, element):
             color(x, element)
@@ -64,10 +67,12 @@ def display(grid):
     
         Choose a number : """.format(*x)
 
+    #clear the screen to print at the same place
     clear()
     print(result, end="")
 
 def win_player(grid, char):
+    #check if a player wins the game
     # check rows
     for i in range(3):
         if all(grid[i][j] == char for j in range(3)):
@@ -83,6 +88,7 @@ def win_player(grid, char):
         return True
 
 def coordinates(choice):
+    #return the row and coloumn corresponding to user input
     # get row
     row = 3 - ((choice + 2) // 3)
     # get col
@@ -90,6 +96,7 @@ def coordinates(choice):
     return row, col
 
 def terminal(grid):
+    #check if the game is at a terminal state
     # player wins
     if win_player(grid, "X"):
         return True
@@ -104,6 +111,7 @@ def terminal(grid):
 
 
 def utility(grid):
+    #return the score corresponding to the terminal state
     if win_player(grid, "X"):
         return -1
     if win_player(grid, "O"):
@@ -112,6 +120,7 @@ def utility(grid):
 
 
 def actions(grid):
+    #return possible actions a player can take at each state
     result = []
     for i in shuffled(range(3)):
         for j in shuffled(range(3)):
@@ -121,6 +130,7 @@ def actions(grid):
 
 
 def minimax(grid, computer, alpha, beta):
+    #return the maximum value a player can obtain at each step
     if terminal(grid):
         return utility(grid)
 
