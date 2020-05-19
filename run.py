@@ -3,7 +3,6 @@ import os
 import random
 
 import colorama
-
 from termcolor import colored
 
 #this is necessary in order to display colors in windows
@@ -26,9 +25,6 @@ ELEMENTS = [
     [(0, 2), (1, 1), (2, 0)]]
 
 CLEAR = "clear" if os.name == "posix" else "cls"
-
-def clear():
-    os.system(CLEAR)
 
 def shuffled(iter):
     # return a randomly shuffled version of an interable
@@ -68,7 +64,7 @@ def display(grid):
         Choose a number : """.format(*x)
 
     #clear the screen to print at the same place
-    clear()
+    os.system(CLEAR)
     print(result, end="")
 
 def win_player(grid, char):
