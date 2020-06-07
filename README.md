@@ -6,16 +6,12 @@ this is a Tic-Tac-Toe implementation with AI using the minimax algorithm and alp
 
 ![game demo](game.gif)
 
-## Installation
+## Setup process
 
 ```
-$ pip3 install -r requirements.txt
-```
-
-## Start the game
-
-```
-$ python3 run.py
+$ git clone https://github.com/Iheb-Haboubi/tic-tac-toe.git
+$ cd tic-tac-toe
+$ python run.py
 ```
 
 ## Additional resources
