@@ -2,12 +2,6 @@ import copy
 import os
 import random
 
-import colorama
-from termcolor import colored
-
-# this is necessary in order to display colors in windows
-colorama.init()
-
 GRID = [
     [None, None, None],
     [None, None, None],
@@ -33,7 +27,7 @@ CLEAR = "clear" if os.name == "posix" else "cls"
 def shuffled(iter):
     # return a randomly shuffled version of an interable
     iter = list(iter)
-    random.shuffle(iter)    
+    random.shuffle(iter)
     return iter
 
 
@@ -48,18 +42,8 @@ def similar(x, indexes):
     return True
 
 
-def color(x, indexes):
-    # if elements of a row / coloumn / diagonal are the same, color them in red
-    for i, j in indexes:
-        x[3 * i + j] = colored(x[3 * i + j], "red")
-
-
 def display(grid):
     x = [grid[i][j] or " " for i in range(3) for j in range(3)]
-    # if the computer wins color the winning row / coloumn / diagonal
-    for element in ELEMENTS:
-        if similar(x, element):
-            color(x, element)
 
     result = """
          1 | 2 | 3                       {} | {} | {}
@@ -68,9 +52,7 @@ def display(grid):
         ---+---+---                     ---+---+---
          7 | 8 | 9                       {} | {} | {}
     
-        Choose a number : """.format(
-        *x
-    )
+        Choose a number : """.format(*x)
 
     # clear the screen to print at the same place
     os.system(CLEAR)
@@ -210,11 +192,11 @@ def game_loop(grid):
         display(grid)
         # check if the player wins
         if win_player(grid, "X"):
-            print(colored("\n\tYou win!", "green"))
+            print("\n\tYou win!")
             break
         # check if it's a tie
         if terminal(grid):
-            print(colored("\n\tTie!", "blue"))
+            print("\n\tTie!")
             break
         # computer turn
         # find the best move to play
@@ -224,7 +206,7 @@ def game_loop(grid):
         display(grid)
         # check if the computer wins with this choice
         if win_player(grid, "O"):
-            print(colored("\n\tYou lose!", "red"))
+            print("\n\tYou lose!")
             break
 
 
