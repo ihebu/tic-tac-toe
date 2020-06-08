@@ -19,17 +19,6 @@ def shuffled(iter):
     return iter
 
 
-def similar(x, indexes):
-    # check if elements of a row / coloumn / diagonal are the same
-    i, j = indexes[0]
-    ref = x[3 * i + j]
-    for index in indexes:
-        i, j = index
-        if x[3 * i + j] != ref:
-            return False
-    return True
-
-
 def render(grid):
     # clear the screen to print at the same place
     os.system(CLEAR)
