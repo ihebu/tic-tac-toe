@@ -90,10 +90,10 @@ def actions(grid):
     return result
 
 
-def minimax(grid, computer, alpha, beta):
+def minimax(grid, computer, alpha, beta, depth):
     # return the maximum value a player can obtain at each step
     if terminal(grid):
-        return utility(grid)
+        return utility(grid), depth
 
     if computer:
         func = max
@@ -107,7 +107,7 @@ def minimax(grid, computer, alpha, beta):
     for action in actions(grid):
         i, j = action
         grid[i][j] = char
-        value = minimax(grid, not computer, alpha, beta)
+        value, depth = minimax(grid, not computer, alpha, beta, depth + 1)
         m = func(m, value)
         # undo the move
         grid[i][j] = " "
@@ -120,20 +120,21 @@ def minimax(grid, computer, alpha, beta):
         if beta <= alpha:
             break
 
-    return m
+    return m, depth
 
 
 def best_move(grid):
     # find all empty cells and compute the minimax for each one
     m = alpha = -INFINITY
-    beta = INFINITY
+    d = beta = INFINITY
     for action in actions(grid):
         i, j = action
         grid[i][j] = "O"
-        value = minimax(grid, False, alpha, beta)
-        if value > m:
-            result = (i, j)
+        value, depth = minimax(grid, False, alpha, beta, 0)
+        if value > m or (value == m and depth < d):
+            result = i, j
             m = value
+            d = depth
         # undo the move
         grid[i][j] = " "
     return result
