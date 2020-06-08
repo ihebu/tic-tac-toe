@@ -4,11 +4,12 @@ import random
 INFINITY = float("inf")
 CLEAR = "clear" if os.name == "posix" else "cls"
 SIZE = 3
+SEPARATOR = "-" * (4 * SIZE + 1)
 
 
 def empty():
     # return an empty grid
-    return [[None] * SIZE for i in range(SIZE)]
+    return [[" "] * SIZE for i in range(SIZE)]
 
 
 def shuffled(iter):
@@ -29,23 +30,15 @@ def similar(x, indexes):
     return True
 
 
-def display(grid):
-    x = [grid[i][j] or " " for i in range(3) for j in range(3)]
-
-    result = """
-         1 | 2 | 3                       {} | {} | {}
-        ---+---+---                     ---+---+---
-         4 | 5 | 6                       {} | {} | {}
-        ---+---+---                     ---+---+---
-         7 | 8 | 9                       {} | {} | {}
-
-        Choose a number : """.format(
-        *x
-    )
-
+def render(grid):
     # clear the screen to print at the same place
     os.system(CLEAR)
-    print(result, end="")
+    print(SEPARATOR)
+    for i in range(SIZE):
+        print("|", end=" ")
+        for j in range(SIZE):
+            print(grid[i][j] + " |", end=" ")
+        print("\n" + SEPARATOR)
 
 
 def win_player(grid, char):
@@ -83,7 +76,7 @@ def terminal(grid):
     if win_player(grid, "O"):
         return True
     # tie
-    if all(grid[i][j] != None for i in range(3) for j in range(3)):
+    if all(grid[i][j] != " " for i in range(3) for j in range(3)):
         return True
     # otherwise the game isn't over yet
     return False
@@ -103,7 +96,7 @@ def actions(grid):
     result = []
     for i in shuffled(range(3)):
         for j in shuffled(range(3)):
-            if grid[i][j] == None:
+            if grid[i][j] == " ":
                 result.append((i, j))
     return result
 
@@ -128,7 +121,7 @@ def minimax(grid, computer, alpha, beta):
         value = minimax(grid, not computer, alpha, beta)
         m = func(m, value)
         # undo the move
-        grid[i][j] = None
+        grid[i][j] = " "
         # alpha-beta pruning
         if computer:
             alpha = func(alpha, m)
@@ -153,21 +146,21 @@ def best_move(grid):
             result = (i, j)
             m = value
         # undo the move
-        grid[i][j] = None
+        grid[i][j] = " "
     return result
 
 
 def get_user_input(grid):
     # ask for player input : a number between 1 and 9
     while True:
-        display(grid)
+        render(grid)
         choice = input()
         # validate input
         if choice not in [str(i) for i in range(1, 10)]:
             continue
         choice = int(choice)
         i, j = coordinates(choice)
-        if grid[i][j] != None:
+        if grid[i][j] != " ":
             continue
         # if cell is not full : fill with 'X'
         grid[i][j] = "X"
@@ -178,24 +171,24 @@ def game_loop(grid):
     while True:
         # player turn
         get_user_input(grid)
-        display(grid)
+        render(grid)
         # check if the player wins
         if win_player(grid, "X"):
-            print("\n\tYou win!")
+            print("\nYou win!")
             break
         # check if it's a tie
         if terminal(grid):
-            print("\n\tTie!")
+            print("\nTie!")
             break
         # computer turn
         # find the best move to play
         i, j = best_move(grid)
         grid[i][j] = "O"
         # display the grid
-        display(grid)
+        render(grid)
         # check if the computer wins with this choice
         if win_player(grid, "O"):
-            print("\n\tYou lose!")
+            print("\nYou lose!")
             break
 
 
@@ -203,7 +196,7 @@ def play():
     while True:
         grid = empty()
         game_loop(grid)
-        again = input("\tplay again ? [y/n] ")
+        again = input("Play again ? [y/n] ")
         if again.upper() != "Y":
             break
 
@@ -212,4 +205,4 @@ if __name__ == "__main__":
     try:
         play()
     except KeyboardInterrupt:
-        print("\n\tkeyboard interrupt : abort")
+        print("\nKeyboard interrupt : Abort")
