@@ -12,13 +12,6 @@ def empty():
     return [[" "] * SIZE for i in range(SIZE)]
 
 
-def shuffled(iter):
-    # return a randomly shuffled version of an interable
-    iter = list(iter)
-    random.shuffle(iter)
-    return iter
-
-
 def render(grid):
     # clear the screen to print at the same place
     os.system(CLEAR)
@@ -83,10 +76,11 @@ def utility(grid):
 def actions(grid):
     # return possible actions a player can take at each state
     result = []
-    for i in shuffled(range(3)):
-        for j in shuffled(range(3)):
+    for i in range(SIZE):
+        for j in range(SIZE):
             if grid[i][j] == " ":
                 result.append((i, j))
+    random.shuffle(result)
     return result
 
 
