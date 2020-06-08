@@ -1,27 +1,14 @@
-import copy
 import os
 import random
 
-GRID = [
-    [None, None, None],
-    [None, None, None],
-    [None, None, None],
-]
-
-# indexes of rows,coloumns and diagonals
-ELEMENTS = [
-    [(0, 0), (0, 1), (0, 2)],
-    [(0, 0), (1, 0), (2, 0)],
-    [(1, 0), (1, 1), (1, 2)],
-    [(0, 1), (1, 1), (2, 1)],
-    [(2, 0), (2, 1), (2, 2)],
-    [(0, 2), (1, 2), (2, 2)],
-    [(0, 0), (1, 1), (2, 2)],
-    [(0, 2), (1, 1), (2, 0)],
-]
-
 INFINITY = float("inf")
 CLEAR = "clear" if os.name == "posix" else "cls"
+SIZE = 3
+
+
+def empty():
+    # return an empty grid
+    return [[None] * SIZE for i in range(SIZE)]
 
 
 def shuffled(iter):
@@ -51,8 +38,10 @@ def display(grid):
          4 | 5 | 6                       {} | {} | {}
         ---+---+---                     ---+---+---
          7 | 8 | 9                       {} | {} | {}
-    
-        Choose a number : """.format(*x)
+
+        Choose a number : """.format(
+        *x
+    )
 
     # clear the screen to print at the same place
     os.system(CLEAR)
@@ -212,7 +201,7 @@ def game_loop(grid):
 
 def play():
     while True:
-        grid = copy.deepcopy(GRID)
+        grid = empty()
         game_loop(grid)
         again = input("\tplay again ? [y/n] ")
         if again.upper() != "Y":
