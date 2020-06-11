@@ -4,7 +4,7 @@
 
 This is a Tic-Tac-Toe implementation with AI using the minimax algorithm and alpha-beta pruning
 
-![game demo](game.gif)
+![game demo](demo.gif)
 
 ## Setup process
 
