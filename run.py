@@ -1,21 +1,24 @@
 import os
 import random
 
+SIZE = 3  # n x n board size
 INFINITY = float("inf")
 CLEAR = "clear" if os.name == "posix" else "cls"
-SIZE = 3
 SEPARATOR = "-" * (4 * SIZE + 1)
+MAP = {-1: "X", 1: "O", 0: " "}
+
 GUIDE = """
+  TIC-TAC-TOE WITH AI -- HUMAN VS MACHINE
 
   HUMAN : X
-  COMPUTER : O
-
+  MACHINE : O
+  
 """
 
 
 def empty():
     # return an empty grid
-    return [[" "] * SIZE for i in range(SIZE)]
+    return [[0] * SIZE for i in range(SIZE)]
 
 
 def render(grid):
@@ -29,7 +32,8 @@ def render(grid):
     for i in range(SIZE):
         print(f"{i} |", end=" ")
         for j in range(SIZE):
-            print(grid[i][j] + " |", end=" ")
+            value = grid[i][j]
+            print(MAP[value] + " |", end=" ")
         print("\n  " + SEPARATOR)
     print()
 
@@ -48,10 +52,9 @@ def get_user_input(grid):
         if i not in valid or j not in valid:
             continue
         i, j = int(i), int(j)
-        if grid[i][j] != " ":
+        if grid[i][j]:
             continue
-        # if cell is empty : fill with 'X'
-        grid[i][j] = "X"
+        grid[i][j] = -1
         break
 
 
@@ -75,13 +78,13 @@ def win_player(grid, char):
 def terminal(grid):
     # check if the game is at a terminal state
     # player wins
-    if win_player(grid, "X"):
+    if win_player(grid, -1):
         return True
     # computer wins
-    if win_player(grid, "O"):
+    if win_player(grid, 1):
         return True
     # tie
-    if all(grid[i][j] != " " for i in range(3) for j in range(3)):
+    if all(grid[i][j] for i in range(3) for j in range(3)):
         return True
     # otherwise the game isn't over yet
     return False
@@ -89,9 +92,9 @@ def terminal(grid):
 
 def utility(grid):
     # return the score corresponding to the terminal state
-    if win_player(grid, "X"):
+    if win_player(grid, -1):
         return -1
-    if win_player(grid, "O"):
+    if win_player(grid, 1):
         return 1
     return 0
 
@@ -101,7 +104,7 @@ def actions(grid):
     result = []
     for i in range(SIZE):
         for j in range(SIZE):
-            if grid[i][j] == " ":
+            if not grid[i][j]:
                 result.append((i, j))
     random.shuffle(result)
     return result
@@ -115,11 +118,11 @@ def minimax(grid, computer, alpha, beta, depth):
     if computer:
         func = max
         m = -INFINITY
-        char = "O"
+        char = 1
     else:
         func = min
         m = INFINITY
-        char = "X"
+        char = -1
 
     for action in actions(grid):
         i, j = action
@@ -127,7 +130,7 @@ def minimax(grid, computer, alpha, beta, depth):
         value, depth = minimax(grid, not computer, alpha, beta, depth + 1)
         m = func(m, value)
         # undo the move
-        grid[i][j] = " "
+        grid[i][j] = 0
         # alpha-beta pruning
         if computer:
             alpha = func(alpha, m)
@@ -146,14 +149,14 @@ def best_move(grid):
     d = beta = INFINITY
     for action in actions(grid):
         i, j = action
-        grid[i][j] = "O"
+        grid[i][j] = 1
         value, depth = minimax(grid, False, alpha, beta, 0)
         if value > m or (value == m and depth < d):
             result = i, j
             m = value
             d = depth
         # undo the move
-        grid[i][j] = " "
+        grid[i][j] = 0
     return result
 
 
@@ -163,7 +166,7 @@ def game_loop(grid):
         get_user_input(grid)
         render(grid)
         # check if the player wins
-        if win_player(grid, "X"):
+        if win_player(grid, -1):
             print("  You win!")
             break
         # check if it's a tie
@@ -173,11 +176,11 @@ def game_loop(grid):
         # computer turn
         # find the best move to play
         i, j = best_move(grid)
-        grid[i][j] = "O"
+        grid[i][j] = 1
         # display the grid
         render(grid)
         # check if the computer wins with this choice
-        if win_player(grid, "O"):
+        if win_player(grid, 1):
             print("  You lose!")
             break
 
