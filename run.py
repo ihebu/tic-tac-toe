@@ -3,7 +3,7 @@ import random
 
 import numpy as np
 
-SIZE = 3  # n x n board size
+SIZE = 3
 INFINITY = float("inf")
 CLEAR = "clear" if os.name == "posix" else "cls"
 SEPARATOR = "-" * (4 * SIZE + 1)
@@ -163,11 +163,11 @@ def game_loop(grid):
         render(grid)
         # check if the player wins
         if win_player(grid, -1):
-            print("   You win!")
+            print("   YOU WIN!")
             break
         # check if it's a tie
         if terminal(grid):
-            print("   Tie!")
+            print("   TIE!")
             break
         # computer turn
         # find the best move to play
@@ -177,7 +177,7 @@ def game_loop(grid):
         render(grid)
         # check if the computer wins with this choice
         if win_player(grid, 1):
-            print("   You lose!")
+            print("   YOU LOSE!")
             break
 
 
@@ -185,7 +185,7 @@ def play():
     while True:
         grid = np.zeros((SIZE, SIZE), int)
         game_loop(grid)
-        print("   Play again ? [y/n]")
+        print("   PLAY AGAIN ? [Y/N]")
         again = input("   > ")
         if again.upper() != "Y":
             break
