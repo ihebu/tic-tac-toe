@@ -8,6 +8,7 @@ INFINITY = float("inf")
 CLEAR = "clear" if os.name == "posix" else "cls"
 SEPARATOR = "-" * (4 * SIZE + 1)
 MAP = {-1: "X", 1: "O", 0: " "}
+ITEMS = [str(c) for c in range(SIZE)]
 
 GUIDE = """
    TIC-TAC-TOE WITH AI -- HUMAN VS MACHINE
@@ -18,20 +19,27 @@ GUIDE = """
 """
 
 
+def print_cols(grid, i):
+    print(f" {i} | ", end="")
+    for j in range(SIZE):
+        value = grid[i, j]
+        print(MAP[value] + " | ", end="")
+
+
+def print_lines(grid):
+    for i in range(SIZE):
+        print_cols(grid, i)
+        print("\n   " + SEPARATOR)
+
+
 def render(grid):
     # clear the screen to print at the same place
     os.system(CLEAR)
     print(GUIDE)
-    print("   ", end="")
-    for i in range(SIZE):
-        print(f"  {i} ", end="")
+    print("     ", end="")
+    print("   ".join(ITEMS), end="")
     print("\n   " + SEPARATOR)
-    for i in range(SIZE):
-        print(f" {i} |", end=" ")
-        for j in range(SIZE):
-            value = grid[i, j]
-            print(MAP[value] + " |", end=" ")
-        print("\n   " + SEPARATOR)
+    print_lines(grid)
     print()
 
 
@@ -44,8 +52,7 @@ def get_user_input(grid):
         if len(choice) != 2:
             continue
         i, j = choice
-        valid = [str(c) for c in range(SIZE)]
-        if i not in valid or j not in valid:
+        if i not in ITEMS or j not in ITEMS:
             continue
         i, j = int(i), int(j)
         if grid[i, j]:
