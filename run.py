@@ -29,7 +29,7 @@ def render(grid):
     for i in range(SIZE):
         print(f" {i} |", end=" ")
         for j in range(SIZE):
-            value = grid[i][j]
+            value = grid[i, j]
             print(MAP[value] + " |", end=" ")
         print("\n   " + SEPARATOR)
     print()
@@ -48,26 +48,26 @@ def get_user_input(grid):
         if i not in valid or j not in valid:
             continue
         i, j = int(i), int(j)
-        if grid[i][j]:
+        if grid[i, j]:
             continue
-        grid[i][j] = -1
+        grid[i, j] = -1
         break
 
 
 def win_player(grid, char):
     # check if a player wins the game
     # check rows
-    for i in range(3):
-        if all(grid[i][j] == char for j in range(3)):
+    for i in range(SIZE):
+        if all(grid[i, j] == char for j in range(SIZE)):
             return True
     # check columns
-    for j in range(3):
-        if all(grid[i][j] == char for i in range(3)):
+    for j in range(SIZE):
+        if all(grid[i, j] == char for i in range(SIZE)):
             return True
     # check diagonals
-    if all(grid[i][i] == char for i in range(3)):
+    if all(grid[i, i] == char for i in range(SIZE)):
         return True
-    if all(grid[i][2 - i] == char for i in range(3)):
+    if all(grid[i, SIZE - i - 1] == char for i in range(SIZE)):
         return True
 
 
@@ -80,7 +80,7 @@ def terminal(grid):
     if win_player(grid, 1):
         return True
     # tie
-    if all(grid[i][j] for i in range(3) for j in range(3)):
+    if all(grid[i, j] for i in range(SIZE) for j in range(SIZE)):
         return True
     # otherwise the game isn't over yet
     return False
@@ -100,7 +100,7 @@ def actions(grid):
     result = []
     for i in range(SIZE):
         for j in range(SIZE):
-            if not grid[i][j]:
+            if not grid[i, j]:
                 result.append((i, j))
     random.shuffle(result)
     return result
@@ -122,11 +122,11 @@ def minimax(grid, computer, alpha, beta, depth):
 
     for action in actions(grid):
         i, j = action
-        grid[i][j] = char
+        grid[i, j] = char
         value, depth = minimax(grid, not computer, alpha, beta, depth + 1)
         m = func(m, value)
         # undo the move
-        grid[i][j] = 0
+        grid[i, j] = 0
         # alpha-beta pruning
         if computer:
             alpha = func(alpha, m)
@@ -145,14 +145,14 @@ def best_move(grid):
     d = beta = INFINITY
     for action in actions(grid):
         i, j = action
-        grid[i][j] = 1
+        grid[i, j] = 1
         value, depth = minimax(grid, False, alpha, beta, 0)
         if value > m or (value == m and depth < d):
             result = i, j
             m = value
             d = depth
         # undo the move
-        grid[i][j] = 0
+        grid[i, j] = 0
     return result
 
 
@@ -172,7 +172,7 @@ def game_loop(grid):
         # computer turn
         # find the best move to play
         i, j = best_move(grid)
-        grid[i][j] = 1
+        grid[i, j] = 1
         # display the grid
         render(grid)
         # check if the computer wins with this choice
