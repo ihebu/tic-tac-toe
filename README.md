@@ -2,7 +2,7 @@
 
 [![python version](https://img.shields.io/badge/python-3-blue.svg)](https://shields.io/)
 
-this is a Tic-Tac-Toe implementation with AI using the minimax algorithm and alpha-beta pruning
+This is a Tic-Tac-Toe implementation with AI using the minimax algorithm and alpha-beta pruning
 
 ![game demo](game.gif)
 
@@ -11,6 +11,7 @@ this is a Tic-Tac-Toe implementation with AI using the minimax algorithm and alp
 ```
 $ git clone https://github.com/Iheb-Haboubi/tic-tac-toe.git
 $ cd tic-tac-toe
+$ pip install -r requirements.txt
 $ python run.py
 ```
 

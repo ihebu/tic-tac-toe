@@ -1,6 +1,8 @@
 import os
 import random
 
+import numpy as np
+
 SIZE = 3  # n x n board size
 INFINITY = float("inf")
 CLEAR = "clear" if os.name == "posix" else "cls"
@@ -8,42 +10,36 @@ SEPARATOR = "-" * (4 * SIZE + 1)
 MAP = {-1: "X", 1: "O", 0: " "}
 
 GUIDE = """
-  TIC-TAC-TOE WITH AI -- HUMAN VS MACHINE
-
-  HUMAN : X
-  MACHINE : O
+   TIC-TAC-TOE WITH AI -- HUMAN VS MACHINE
   
+   HUMAN : X
+   MACHINE : O
+
 """
-
-
-def empty():
-    # return an empty grid
-    return [[0] * SIZE for i in range(SIZE)]
 
 
 def render(grid):
     # clear the screen to print at the same place
     os.system(CLEAR)
     print(GUIDE)
-    print("  ", end="")
+    print("   ", end="")
     for i in range(SIZE):
         print(f"  {i} ", end="")
-    print("\n  " + SEPARATOR)
+    print("\n   " + SEPARATOR)
     for i in range(SIZE):
-        print(f"{i} |", end=" ")
+        print(f" {i} |", end=" ")
         for j in range(SIZE):
             value = grid[i][j]
             print(MAP[value] + " |", end=" ")
-        print("\n  " + SEPARATOR)
+        print("\n   " + SEPARATOR)
     print()
 
 
 def get_user_input(grid):
-    # ask for player input : a number between 1 and 9
     while True:
         render(grid)
-        print("  Enter row and column")
-        choice = input("  > ").split()
+        print("   ENTER ROW AND COLUMN")
+        choice = input("   > ").split()
         # validate input
         if len(choice) != 2:
             continue
@@ -167,11 +163,11 @@ def game_loop(grid):
         render(grid)
         # check if the player wins
         if win_player(grid, -1):
-            print("  You win!")
+            print("   You win!")
             break
         # check if it's a tie
         if terminal(grid):
-            print("  Tie!")
+            print("   Tie!")
             break
         # computer turn
         # find the best move to play
@@ -181,16 +177,16 @@ def game_loop(grid):
         render(grid)
         # check if the computer wins with this choice
         if win_player(grid, 1):
-            print("  You lose!")
+            print("   You lose!")
             break
 
 
 def play():
     while True:
-        grid = empty()
+        grid = np.zeros((SIZE, SIZE), int)
         game_loop(grid)
-        print("  Play again ? [y/n]")
-        again = input("  > ")
+        print("   Play again ? [y/n]")
+        again = input("   > ")
         if again.upper() != "Y":
             break
 
@@ -199,4 +195,4 @@ if __name__ == "__main__":
     try:
         play()
     except KeyboardInterrupt:
-        print("\nKeyboard interrupt : Abort")
+        print("\n   KEYBOARD INTERRUPT : ABORT")
