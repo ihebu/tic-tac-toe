@@ -5,6 +5,12 @@ INFINITY = float("inf")
 CLEAR = "clear" if os.name == "posix" else "cls"
 SIZE = 3
 SEPARATOR = "-" * (4 * SIZE + 1)
+GUIDE = """
+
+  HUMAN : X
+  COMPUTER : O
+
+"""
 
 
 def empty():
@@ -15,12 +21,38 @@ def empty():
 def render(grid):
     # clear the screen to print at the same place
     os.system(CLEAR)
-    print(SEPARATOR)
+    print(GUIDE)
+    print("  ", end="")
     for i in range(SIZE):
-        print("|", end=" ")
+        print(f"  {i} ", end="")
+    print("\n  " + SEPARATOR)
+    for i in range(SIZE):
+        print(f"{i} |", end=" ")
         for j in range(SIZE):
             print(grid[i][j] + " |", end=" ")
-        print("\n" + SEPARATOR)
+        print("\n  " + SEPARATOR)
+    print()
+
+
+def get_user_input(grid):
+    # ask for player input : a number between 1 and 9
+    while True:
+        render(grid)
+        print("  Enter row and column")
+        choice = input("  > ").split()
+        # validate input
+        if len(choice) != 2:
+            continue
+        i, j = choice
+        valid = [str(c) for c in range(SIZE)]
+        if i not in valid or j not in valid:
+            continue
+        i, j = int(i), int(j)
+        if grid[i][j] != " ":
+            continue
+        # if cell is empty : fill with 'X'
+        grid[i][j] = "X"
+        break
 
 
 def win_player(grid, char):
@@ -38,15 +70,6 @@ def win_player(grid, char):
         return True
     if all(grid[i][2 - i] == char for i in range(3)):
         return True
-
-
-def coordinates(choice):
-    # return the row and coloumn corresponding to user input
-    # get row
-    row = 3 - ((choice + 2) // 3)
-    # get col
-    col = (choice - 1) % 3
-    return row, col
 
 
 def terminal(grid):
@@ -134,23 +157,6 @@ def best_move(grid):
     return result
 
 
-def get_user_input(grid):
-    # ask for player input : a number between 1 and 9
-    while True:
-        render(grid)
-        choice = input()
-        # validate input
-        if choice not in [str(i) for i in range(1, 10)]:
-            continue
-        choice = int(choice)
-        i, j = coordinates(choice)
-        if grid[i][j] != " ":
-            continue
-        # if cell is not full : fill with 'X'
-        grid[i][j] = "X"
-        break
-
-
 def game_loop(grid):
     while True:
         # player turn
@@ -158,11 +164,11 @@ def game_loop(grid):
         render(grid)
         # check if the player wins
         if win_player(grid, "X"):
-            print("\nYou win!")
+            print("  You win!")
             break
         # check if it's a tie
         if terminal(grid):
-            print("\nTie!")
+            print("  Tie!")
             break
         # computer turn
         # find the best move to play
@@ -172,7 +178,7 @@ def game_loop(grid):
         render(grid)
         # check if the computer wins with this choice
         if win_player(grid, "O"):
-            print("\nYou lose!")
+            print("  You lose!")
             break
 
 
@@ -180,7 +186,8 @@ def play():
     while True:
         grid = empty()
         game_loop(grid)
-        again = input("Play again ? [y/n] ")
+        print("  Play again ? [y/n]")
+        again = input("  > ")
         if again.upper() != "Y":
             break
 
