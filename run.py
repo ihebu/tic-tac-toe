@@ -1,46 +1,14 @@
-import os
+#! /usr/bin/python3
+
 import random
 
 import numpy as np
 
-SIZE = 3
-INFINITY = float("inf")
-CLEAR = "clear" if os.name == "posix" else "cls"
-SEPARATOR = "-" * (4 * SIZE + 1)
-MAP = {-1: "X", 1: "O", 0: " "}
-ITEMS = [str(c) for c in range(SIZE)]
+from display import render
 
-GUIDE = """
-   TIC-TAC-TOE WITH AI -- HUMAN VS MACHINE
-  
-   HUMAN : X
-   MACHINE : O
-
-"""
-
-
-def print_cols(grid, i):
-    print(f" {i} | ", end="")
-    for j in range(SIZE):
-        value = grid[i, j]
-        print(MAP[value] + " | ", end="")
-
-
-def print_lines(grid):
-    for i in range(SIZE):
-        print_cols(grid, i)
-        print("\n   " + SEPARATOR)
-
-
-def render(grid):
-    # clear the screen to print at the same place
-    os.system(CLEAR)
-    print(GUIDE)
-    print("     ", end="")
-    print("   ".join(ITEMS), end="")
-    print("\n   " + SEPARATOR)
-    print_lines(grid)
-    print()
+size = 3
+inf = float("inf")
+items = [str(c) for c in range(size)]
 
 
 def get_user_input(grid):
@@ -52,7 +20,7 @@ def get_user_input(grid):
         if len(choice) != 2:
             continue
         i, j = choice
-        if i not in ITEMS or j not in ITEMS:
+        if i not in items or j not in items:
             continue
         i, j = int(i), int(j)
         if grid[i, j]:
@@ -63,34 +31,18 @@ def get_user_input(grid):
 
 def win_player(grid, char):
     # check if a player wins the game
-    # check rows
-    for i in range(SIZE):
-        if all(grid[i, j] == char for j in range(SIZE)):
-            return True
-    # check columns
-    for j in range(SIZE):
-        if all(grid[i, j] == char for i in range(SIZE)):
-            return True
-    # check diagonals
-    if all(grid[i, i] == char for i in range(SIZE)):
-        return True
-    if all(grid[i, SIZE - i - 1] == char for i in range(SIZE)):
-        return True
+    # check for rows, columns and diagonals
+    result = char * size in grid.sum(axis=1)
+    result = result or char * size in grid.sum(axis=0)
+    result = result or char * size == np.trace(grid)
+    result = result or char * size == np.trace(np.fliplr(grid))
+    return result
 
 
 def terminal(grid):
     # check if the game is at a terminal state
-    # player wins
-    if win_player(grid, -1):
-        return True
-    # computer wins
-    if win_player(grid, 1):
-        return True
-    # tie
-    if all(grid[i, j] for i in range(SIZE) for j in range(SIZE)):
-        return True
-    # otherwise the game isn't over yet
-    return False
+    # a game is a terminal state if either player wins or it's a tie
+    return win_player(grid, -1) or win_player(grid, 1) or 0 not in grid
 
 
 def utility(grid):
@@ -104,12 +56,9 @@ def utility(grid):
 
 def actions(grid):
     # return possible actions a player can take at each state
-    result = []
-    for i in range(SIZE):
-        for j in range(SIZE):
-            if not grid[i, j]:
-                result.append((i, j))
-    random.shuffle(result)
+    result = np.where(grid == 0)
+    result = np.transpose(result)
+    np.random.shuffle(result)
     return result
 
 
@@ -120,11 +69,11 @@ def minimax(grid, computer, alpha, beta, depth):
 
     if computer:
         func = max
-        m = -INFINITY
+        m = -inf
         char = 1
     else:
         func = min
-        m = INFINITY
+        m = inf
         char = -1
 
     for action in actions(grid):
@@ -148,8 +97,8 @@ def minimax(grid, computer, alpha, beta, depth):
 
 def best_move(grid):
     # find all empty cells and compute the minimax for each one
-    m = alpha = -INFINITY
-    d = beta = INFINITY
+    m = alpha = -inf
+    d = beta = inf
     for action in actions(grid):
         i, j = action
         grid[i, j] = 1
@@ -177,12 +126,10 @@ def game_loop(grid):
             print("   TIE!")
             break
         # computer turn
-        # find the best move to play
         i, j = best_move(grid)
         grid[i, j] = 1
-        # display the grid
         render(grid)
-        # check if the computer wins with this choice
+        # check if machine wins
         if win_player(grid, 1):
             print("   YOU LOSE!")
             break
@@ -190,7 +137,7 @@ def game_loop(grid):
 
 def play():
     while True:
-        grid = np.zeros((SIZE, SIZE), int)
+        grid = np.zeros((size, size), int)
         game_loop(grid)
         print("   PLAY AGAIN ? [Y/N]")
         again = input("   > ")
