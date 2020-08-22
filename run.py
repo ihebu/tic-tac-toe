@@ -7,8 +7,10 @@ import numpy as np
 from display import render
 
 size = 3
-inf = float("inf")
 items = [str(c) for c in range(size)]
+
+# infinity
+INF = float("inf")
 
 
 def get_user_input(grid):
@@ -69,11 +71,11 @@ def minimax(grid, computer, alpha, beta, depth):
 
     if computer:
         func = max
-        m = -inf
+        m = -INF
         char = 1
     else:
         func = min
-        m = inf
+        m = INF
         char = -1
 
     for action in actions(grid):
@@ -97,8 +99,8 @@ def minimax(grid, computer, alpha, beta, depth):
 
 def best_move(grid):
     # find all empty cells and compute the minimax for each one
-    m = alpha = -inf
-    d = beta = inf
+    m = alpha = -INF
+    d = beta = INF
     for action in actions(grid):
         i, j = action
         grid[i, j] = 1

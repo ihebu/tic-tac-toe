@@ -2,15 +2,16 @@ import os
 
 size = 3
 separator = "-" * (4 * size + 1)
-clear = "clear" if os.name == "posix" else "cls"
 items = [str(c) for c in range(size)]
 
-guide = """
+GUIDE = """
    TIC-TAC-TOE WITH AI -- HUMAN VS MACHINE
     
    HUMAN : X
    MACHINE : O
 """
+
+CLEAR = "clear" if os.name == "posix" else "cls"
 
 
 def print_cols(grid, i):
@@ -29,8 +30,8 @@ def print_lines(grid):
 
 def render(grid):
     # clear the screen to print at the same place
-    os.system(clear)
-    print(guide)
+    os.system(CLEAR)
+    print(GUIDE)
     print("     ", end="")
     print("   ".join(items), end="")
     print("\n   " + separator)
