@@ -7,7 +7,6 @@ import numpy as np
 from display import render
 
 size = 3
-items = [str(c) for c in range(size)]
 
 # infinity
 INF = float("inf")
@@ -18,17 +17,16 @@ def get_user_input(grid):
         render(grid)
         print("   ENTER ROW AND COLUMN")
         choice = input("   > ").split()
-        # validate input
-        if len(choice) != 2:
+        try:
+            i, j = map(int, choice)
+            if i < 0 or j < 0:
+                continue
+            # computer is represented as 1
+            # user is represented as -1
+            grid[i, j] = -1
+            break
+        except:
             continue
-        i, j = choice
-        if i not in items or j not in items:
-            continue
-        i, j = int(i), int(j)
-        if grid[i, j]:
-            continue
-        grid[i, j] = -1
-        break
 
 
 def win_player(grid, char):
