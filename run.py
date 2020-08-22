@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-
 import random
 
 import numpy as np
