@@ -1,7 +1,9 @@
 import os
 
-size = 3
-separator = "-" * (4 * size + 1)
+from settings import size
+
+
+SEPARATOR = "-" * (4 * size + 1)
 
 GUIDE = """
    TIC-TAC-TOE WITH AI -- HUMAN VS MACHINE
@@ -22,10 +24,10 @@ def _print_cols(grid, i):
 
 
 def _print_lines(grid):
-    print("\n   " + separator)
+    print("\n   " + SEPARATOR)
     for i in range(size):
         _print_cols(grid, i)
-        print("\n   " + separator)
+        print("\n   " + SEPARATOR)
 
 
 def render(grid):

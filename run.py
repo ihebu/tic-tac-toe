@@ -2,9 +2,9 @@ import random
 
 import numpy as np
 
+from settings import size
 from display import render
 
-size = 3
 
 # infinity
 INF = float("inf")
