@@ -2,12 +2,19 @@ import random
 
 import numpy as np
 
-from settings import size
 from display import render
-
+from settings import size
 
 # infinity
 INF = float("inf")
+
+
+def move(grid, row, col, player):
+    grid[row][col] = player
+
+
+def undo(grid, row, col):
+    grid[row][col] = 0
 
 
 def get_user_input(grid):
@@ -16,12 +23,12 @@ def get_user_input(grid):
         print("   ENTER ROW AND COLUMN")
         choice = input("   > ").split()
         try:
-            i, j = map(int, choice)
-            if i < 0 or j < 0:
+            row, col = map(int, choice)
+            if row < 0 or col < 0:
                 continue
             # computer is represented as 1
             # user is represented as -1
-            grid[i, j] = -1
+            move(grid, row, col, -1)
             break
         except:
             continue
@@ -75,12 +82,12 @@ def minimax(grid, computer, alpha, beta, depth):
         char = -1
 
     for action in actions(grid):
-        i, j = action
-        grid[i, j] = char
+        row, col = action
+        move(grid, row, col, char)
         value, depth = minimax(grid, not computer, alpha, beta, depth + 1)
         m = func(m, value)
         # undo the move
-        grid[i, j] = 0
+        undo(grid, row, col)
         # alpha-beta pruning
         if computer:
             alpha = func(alpha, m)
@@ -98,15 +105,15 @@ def best_move(grid):
     m = alpha = -INF
     d = beta = INF
     for action in actions(grid):
-        i, j = action
-        grid[i, j] = 1
+        row, col = action
+        move(grid, row, col, 1)
         value, depth = minimax(grid, False, alpha, beta, 0)
         if value > m or (value == m and depth < d):
-            result = i, j
+            result = row, col
             m = value
             d = depth
         # undo the move
-        grid[i, j] = 0
+        undo(grid, row, col)
     return result
 
 
@@ -124,8 +131,8 @@ def game_loop(grid):
             print("   TIE!")
             break
         # computer turn
-        i, j = best_move(grid)
-        grid[i, j] = 1
+        row, col = best_move(grid)
+        move(grid, row, col, 1)
         render(grid)
         # check if machine wins
         if win_player(grid, 1):
