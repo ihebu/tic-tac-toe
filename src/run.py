@@ -24,12 +24,13 @@ def get_user_input(grid):
         choice = input("   > ").split()
         try:
             row, col = map(int, choice)
-            if row < 0 or col < 0:
+            if row < 0 or row > size:
                 continue
-            # computer is represented as 1
-            # user is represented as -1
-            move(grid, row, col, -1)
-            break
+            if col < 0 or col > size:
+                continue
+            if grid[row][col] != 0:
+                continue
+            return row, col
         except:
             continue
 
@@ -120,7 +121,8 @@ def best_move(grid):
 def game_loop(grid):
     while True:
         # player turn
-        get_user_input(grid)
+        row, col = get_user_input(grid)
+        move(grid, row, col, -1)
         render(grid)
         # check if the player wins
         if win_player(grid, -1):
@@ -142,6 +144,7 @@ def game_loop(grid):
 
 def play():
     while True:
+        # Initialize empty grid
         grid = np.zeros((size, size), int)
         game_loop(grid)
         print("   PLAY AGAIN ? [Y/N]")
