@@ -1,17 +1,21 @@
 # Tic-Tac-Toe
 
-[![python version](https://img.shields.io/badge/python-3-blue.svg)](https://shields.io/)
+Unbeatable AI agent that plays Tic-Tac-Toe. The agent is using the minimax algorithm and alpha-beta pruning.
 
-This is a Tic-Tac-Toe implementation with AI using the minimax algorithm and alpha-beta pruning
+![game demo](assets/demo.gif)
 
-![game demo](demo.gif)
 
-## Setup process
+## Requirements
+
+- python3
+- numpy
+
+## Installation
 
 ```
 $ git clone https://github.com/Iheb-Haboubi/tic-tac-toe.git
-$ cd tic-tac-toe
-$ pip install -r requirements.txt
+$ cd tic-tac-toe/src
+$ pip install numpy
 $ python run.py
 ```
 
